@@ -22,23 +22,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.example.mixin.core;
+package codes.domino.mixin.core;
 
-import com.example.command.HelloCommand;
-import org.bukkit.command.Command;
-import org.bukkit.command.SimpleCommandMap;
+import net.minecraft.world.entity.player.Player;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftHumanEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = SimpleCommandMap.class)
-public abstract class MixinSimpleCommandMap {
-  @Shadow public abstract boolean register(String fallbackPrefix, Command command);
+@Mixin(value = CraftPlayer.class)
+public abstract class MixinCraftPlayer extends CraftHumanEntity {
 
-  @Inject(method = "setDefaultCommands()V", at = @At("TAIL"), remap = false)
-  public void registerOwnCommands(CallbackInfo callback) {
-    this.register("example", new HelloCommand("hello"));
+  public MixinCraftPlayer(CraftServer server, Player entity) {
+    super(server, entity);
+  }
+
+  @Inject(method = "setOp", at = @At("HEAD"))
+  private void onSetOpAttempt(CallbackInfo callback) {
+    callback.cancel();
+    CraftPlayer playerObject = (CraftPlayer) (Object) this;
+    playerObject.getServer().getLogger().warning(playerObject.getName() + " would have gotten " +
+      "opped by a plugin if NoForceOP didn't stop that. Please make sure your server is not infected by a backdoor!");
   }
 }
