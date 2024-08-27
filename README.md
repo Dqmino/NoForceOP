@@ -1,5 +1,4 @@
-Ignite Mod Template [![Discord](https://img.shields.io/discord/819522977586348052?style=for-the-badge)](https://discord.gg/rYpaxPFQrj)
+NoForceOP
 ===================
 
-A template for creating an [Ignite](https://github.com/vectrix-space/ignite) 
-mod for [Paper](https://papermc.io/) 1.20.4.
+A mixin for paper servers, that stops plugins from opping players, and notifies the server owner in the console, so that they could /op <player> manually.
